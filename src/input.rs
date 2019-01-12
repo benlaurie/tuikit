@@ -16,9 +16,9 @@ use std::slice;
 use nix::sys::time::{TimeVal, TimeValLike};
 use nix::libc::timeval;
 
-pub trait ReadAndAsRawFd: Read + AsRawFd {}
+pub trait ReadAndAsRawFd: Read + AsRawFd + Send {}
 
-impl<T> ReadAndAsRawFd for T where T: Read + AsRawFd {}
+impl<T> ReadAndAsRawFd for T where T: Read + AsRawFd + Send {}
 
 pub struct KeyBoard {
     file: Box<dyn ReadAndAsRawFd>,
@@ -50,7 +50,7 @@ fn wait_until_ready(fd: RawFd, timeout: Duration) -> Result<()> {
 // https://www.xfree86.org/4.8.0/ctlseqs.html
 /// Struct to get keys
 ///
-/// ```
+/// ```no_run
 /// use tuikit::input::KeyBoard;
 /// use tuikit::key::Key;
 /// use std::time::Duration;
